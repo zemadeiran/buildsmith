@@ -1,3 +1,4 @@
 /target
 .buildsmith
 .DS_Store
+.forge
