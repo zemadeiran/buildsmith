@@ -1,0 +1,42 @@
+project = "forge"
+
+[tasks.check]
+command = "cargo check 2>&1"
+inputs = ["src", "Cargo.toml"]
+description = "Type-check the project"
+
+[tasks.clippy]
+command = "cargo clippy -- -D warnings 2>&1"
+inputs = ["src", "Cargo.toml"]
+description = "Run clippy lints"
+
+[tasks.fmt]
+command = "cargo fmt -- --check 2>&1"
+inputs = ["src"]
+description = "Check code formatting"
+
+[tasks.build]
+command = "cargo build 2>&1"
+inputs = ["src", "Cargo.toml"]
+outputs = ["target/debug/forge"]
+deps = ["check"]
+description = "Build the forge binary"
+
+[tasks.test]
+command = "cargo test 2>&1"
+inputs = ["src", "Cargo.toml"]
+deps = ["build"]
+description = "Run the test suite"
+
+[tasks.release]
+command = "cargo build --release 2>&1"
+inputs = ["src", "Cargo.toml"]
+outputs = ["target/release/forge"]
+deps = ["check", "clippy"]
+description = "Build optimized release binary"
+
+[tasks.ci]
+command = "echo 'CI pipeline complete'"
+deps = ["fmt", "clippy", "build", "test"]
+description = "Run full CI pipeline"
+
