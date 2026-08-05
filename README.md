@@ -4,6 +4,7 @@ A content-hashed, DAG-based build system written in Rust.
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Rust](https://img.shields.io/badge/rust-2024-orange)](https://www.rust-lang.org/)
+[![crates.io](https://img.shields.io/crates/v/buildsmith)](https://crates.io/crates/buildsmith)
 
 ## Why?
 
@@ -18,6 +19,14 @@ Most build systems are either fast but incorrect (Make), correct but complex (Ba
 ## Installation
 
 ```bash
+cargo install buildsmith
+```
+
+Or build from source:
+
+```bash
+git clone https://github.com/zemadeiran/buildsmith.git
+cd buildsmith
 cargo install --path .
 ```
 
