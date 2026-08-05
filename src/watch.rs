@@ -66,10 +66,10 @@ pub async fn watch(config: BuildConfig, base_dir: PathBuf, task: Option<String>)
                     continue;
                 }
 
-                // Ignore forge's own cache directory and target directory
+                // Ignore buildsmith's own cache directory and target directory
                 if event.paths.iter().any(|p| {
                     let s = p.to_string_lossy();
-                    s.contains(".forge/cache") || s.contains("/target/")
+                    s.contains(".buildsmith/cache") || s.contains("/target/")
                 }) {
                     continue;
                 }

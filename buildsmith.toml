@@ -1,4 +1,4 @@
-project = "forge"
+project = "buildsmith"
 
 [tasks.check]
 command = "cargo check 2>&1"
@@ -18,9 +18,9 @@ description = "Check code formatting"
 [tasks.build]
 command = "cargo build 2>&1"
 inputs = ["src", "Cargo.toml"]
-outputs = ["target/debug/forge"]
+outputs = ["target/debug/buildsmith"]
 deps = ["check"]
-description = "Build the forge binary"
+description = "Build the buildsmith binary"
 
 [tasks.test]
 command = "cargo test 2>&1"
@@ -31,7 +31,7 @@ description = "Run the test suite"
 [tasks.release]
 command = "cargo build --release 2>&1"
 inputs = ["src", "Cargo.toml"]
-outputs = ["target/release/forge"]
+outputs = ["target/release/buildsmith"]
 deps = ["check", "clippy"]
 description = "Build optimized release binary"
 

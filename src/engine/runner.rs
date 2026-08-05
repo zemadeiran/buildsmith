@@ -661,7 +661,7 @@ async fn run_single_task(
                 }
                 cache.store_hash(&task_hash).ok();
 
-                // Store manifest for forge why
+                // Store manifest for buildsmith why
                 let manifest: Vec<cache::FileHash> = input_files
                     .iter()
                     .filter_map(|p| {

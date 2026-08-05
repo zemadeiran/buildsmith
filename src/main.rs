@@ -14,7 +14,7 @@ use engine::BuildRunner;
 
 #[derive(Parser)]
 #[command(
-    name = "forge",
+    name = "buildsmith",
     version,
     about = "A content-hashed, DAG-based build system"
 )]
@@ -22,7 +22,7 @@ struct Cli {
     #[command(subcommand)]
     command: Commands,
 
-    /// Path to the build config file (default: forge.toml)
+    /// Path to the build config file (default: buildsmith.toml)
     #[arg(short, long, global = true)]
     config: Option<PathBuf>,
 
@@ -90,7 +90,7 @@ enum Commands {
         task: String,
     },
 
-    /// Initialize a new forge.toml in the current directory
+    /// Initialize a new buildsmith.toml in the current directory
     Init,
 
     /// Watch for file changes and rebuild automatically
@@ -114,14 +114,16 @@ enum CacheAction {
 async fn main() -> Result<()> {
     let cli = Cli::parse();
 
-    let config_path = cli.config.unwrap_or_else(|| PathBuf::from("forge.toml"));
+    let config_path = cli
+        .config
+        .unwrap_or_else(|| PathBuf::from("buildsmith.toml"));
     let base_dir = std::env::current_dir()?;
 
     // Init doesn't need an existing config
     if matches!(cli.command, Commands::Init) {
-        let target = base_dir.join("forge.toml");
+        let target = base_dir.join("buildsmith.toml");
         if target.exists() {
-            anyhow::bail!("forge.toml already exists in this directory");
+            anyhow::bail!("buildsmith.toml already exists in this directory");
         }
 
         let template = if base_dir.join("Cargo.toml").exists() {
@@ -208,11 +210,14 @@ description = "Run full CI pipeline"
         };
 
         std::fs::write(&target, template)?;
-        println!("{} Created forge.toml", "[OK]".green());
+        println!("{} Created buildsmith.toml", "[OK]".green());
         println!("\nNext steps:");
-        println!("  1. Edit forge.toml to customize tasks");
-        println!("  2. Run {} to see available tasks", "forge list".cyan());
-        println!("  3. Run {} to build", "forge build".cyan());
+        println!("  1. Edit buildsmith.toml to customize tasks");
+        println!(
+            "  2. Run {} to see available tasks",
+            "buildsmith list".cyan()
+        );
+        println!("  3. Run {} to build", "buildsmith build".cyan());
         return Ok(());
     }
 

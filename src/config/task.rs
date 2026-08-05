@@ -14,7 +14,7 @@ pub struct BuildConfig {
 
 #[allow(dead_code)]
 fn default_cache_dir() -> PathBuf {
-    PathBuf::from(".forge/cache")
+    PathBuf::from(".buildsmith/cache")
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -29,8 +29,3 @@ pub struct TaskConfig {
     #[serde(default)]
     pub description: Option<String>,
 }
-// test comment
-// another change
-// test change
-// test change
-// forge why test marker

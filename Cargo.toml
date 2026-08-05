@@ -11,7 +11,7 @@ keywords = ["build", "task-runner", "cache", "dag", "incremental"]
 categories = ["development-tools::build-utils"]
 
 [[bin]]
-name = "forge"
+name = "buildsmith"
 path = "src/main.rs"
 
 [dependencies]
