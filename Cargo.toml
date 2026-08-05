@@ -27,3 +27,6 @@ anyhow = "1"
 petgraph = "0.6"
 notify = "7"
 serde_json = "1"
+
+[dev-dependencies]
+tempfile = "3"

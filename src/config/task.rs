@@ -9,6 +9,7 @@ pub struct BuildConfig {
     pub project: String,
     #[serde(default = "default_cache_dir")]
     pub cache_dir: PathBuf,
+    #[serde(default)]
     pub tasks: HashMap<String, TaskConfig>,
 }
 

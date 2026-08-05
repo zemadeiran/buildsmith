@@ -217,3 +217,105 @@ impl Cache {
         Ok(total)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::HashSet;
+
+    #[test]
+    fn test_cache_store_and_get() {
+        let dir = tempfile::tempdir().unwrap();
+        let cache = Cache::new(dir.path()).unwrap();
+        let hash = "abcdef1234567890";
+        assert!(cache.get(hash).is_none());
+        cache.store_hash(hash).unwrap();
+        assert!(cache.get(hash).is_some());
+    }
+
+    #[test]
+    fn test_cache_manifest_roundtrip() {
+        let dir = tempfile::tempdir().unwrap();
+        let cache = Cache::new(dir.path()).unwrap();
+        let hash = "abcdef1234567890";
+        let files = vec![
+            FileHash { path: "src/main.rs".to_string(), hash: "aaa".to_string() },
+            FileHash { path: "src/lib.rs".to_string(), hash: "bbb".to_string() },
+        ];
+        cache.store_manifest(hash, &files).unwrap();
+        let retrieved = cache.get_manifest(hash).unwrap();
+        assert_eq!(retrieved.len(), 2);
+        assert_eq!(retrieved[0].path, "src/main.rs");
+        assert_eq!(retrieved[0].hash, "aaa");
+        assert_eq!(retrieved[1].path, "src/lib.rs");
+        assert_eq!(retrieved[1].hash, "bbb");
+    }
+
+    #[test]
+    fn test_cache_manifest_missing() {
+        let dir = tempfile::tempdir().unwrap();
+        let cache = Cache::new(dir.path()).unwrap();
+        assert!(cache.get_manifest("nonexistent").is_none());
+    }
+
+    #[test]
+    fn test_cache_task_hash_roundtrip() {
+        let dir = tempfile::tempdir().unwrap();
+        let cache = Cache::new(dir.path()).unwrap();
+        cache.store_task_hash("build", "hash123").unwrap();
+        cache.store_task_hash("test", "hash456").unwrap();
+        assert_eq!(cache.get_task_hash("build").unwrap(), "hash123");
+        assert_eq!(cache.get_task_hash("test").unwrap(), "hash456");
+    }
+
+    #[test]
+    fn test_cache_task_hash_overwrite() {
+        let dir = tempfile::tempdir().unwrap();
+        let cache = Cache::new(dir.path()).unwrap();
+        cache.store_task_hash("build", "old_hash").unwrap();
+        cache.store_task_hash("build", "new_hash").unwrap();
+        assert_eq!(cache.get_task_hash("build").unwrap(), "new_hash");
+    }
+
+    #[test]
+    fn test_cache_task_hash_missing() {
+        let dir = tempfile::tempdir().unwrap();
+        let cache = Cache::new(dir.path()).unwrap();
+        assert!(cache.get_task_hash("nonexistent").is_none());
+    }
+
+    #[test]
+    fn test_cache_clear() {
+        let dir = tempfile::tempdir().unwrap();
+        let cache = Cache::new(dir.path()).unwrap();
+        cache.store_hash("abcdef1234567890").unwrap();
+        assert!(cache.get("abcdef1234567890").is_some());
+        cache.clear().unwrap();
+        assert!(cache.get("abcdef1234567890").is_none());
+    }
+
+    #[test]
+    fn test_cache_prune() {
+        let dir = tempfile::tempdir().unwrap();
+        let cache = Cache::new(dir.path()).unwrap();
+        let keep = "abcdef1234567890";
+        let stale = "fedcba0987654321";
+        cache.store_hash(keep).unwrap();
+        cache.store_hash(stale).unwrap();
+        let keep_set: HashSet<String> = vec![keep.to_string()].into_iter().collect();
+        let (removed, _) = cache.prune(&keep_set).unwrap();
+        assert!(cache.get(keep).is_some());
+        assert!(cache.get(stale).is_none());
+        assert!(removed >= 1);
+    }
+
+    #[test]
+    fn test_cache_entry_count() {
+        let dir = tempfile::tempdir().unwrap();
+        let cache = Cache::new(dir.path()).unwrap();
+        cache.store_hash("abcdef1234567890").unwrap();
+        cache.store_hash("fedcba0987654321").unwrap();
+        let count = cache.entry_count().unwrap();
+        assert!(count >= 2);
+    }
+}
