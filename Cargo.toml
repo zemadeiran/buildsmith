@@ -1,8 +1,18 @@
 [package]
-name = "forge"
+name = "buildsmith"
 version = "0.1.0"
 edition = "2024"
 description = "A content-hashed, DAG-based build system"
+license = "MIT"
+repository = "https://github.com/ze/buildsmith"
+homepage = "https://github.com/ze/buildsmith"
+readme = "README.md"
+keywords = ["build", "task-runner", "cache", "dag", "incremental"]
+categories = ["development-tools::build-utils"]
+
+[[bin]]
+name = "forge"
+path = "src/main.rs"
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }
@@ -14,11 +24,6 @@ tokio = { version = "1", features = ["full"] }
 walkdir = "2"
 colored = "2"
 anyhow = "1"
-thiserror = "1"
-tracing = "0.1"
-tracing-subscriber = "0.3"
-dashmap = "6"
-rayon = "1"
 petgraph = "0.6"
 notify = "7"
 serde_json = "1"

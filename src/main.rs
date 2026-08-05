@@ -112,7 +112,6 @@ enum CacheAction {
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    tracing_subscriber::fmt::init();
     let cli = Cli::parse();
 
     let config_path = cli.config.unwrap_or_else(|| PathBuf::from("forge.toml"));
